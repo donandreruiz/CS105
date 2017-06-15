@@ -1,0 +1,10 @@
+#include <getopt.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
+#include <assert.h>
+#include <signal.h>
+#include "cachelab.h"
+#include <math.h>

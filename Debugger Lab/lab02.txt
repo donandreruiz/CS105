@@ -1,0 +1,241 @@
+** Eberto Ruiz and Somto Uzoegwu **
+** Lab 2 **
+
+
+(1)
+We get a segmentation fault.
+
+(2)
+#3  0x00000000004005dd in main (argc=1, argv=0x7fffffffea68) at problem1.c:17
+17	    printf("%d\n", loop_while(atoi(argv[1]), 16));
+
+(3)
+The argument that was passed in is argv[1] which is 0x0
+
+(4)
+0x0
+
+(5)
+-1835
+
+(6)
+{0x7fffffffec84 "/home/eruiz/Desktop/CS105/Debugger Lab/problem1",
+  0x7fffffffecb4 "5"}
+
+  we suspect that, that is what is passed into the main function.
+
+(7)
+loop_while (a=5, b=16) at problem1.c:5
+5	    int i = 0;
+
+(8)
+1	#include <stdio.h>
+2
+3	int loop_while(int a, int b)
+4	{
+5	    int i = 0;
+6	    int result = a;
+7	    while (i < 256) {
+8		result += a;
+9		a -= b;
+10		i += b;
+
+after the return key:
+
+11	    }
+12	    return result;
+13	}
+14
+15	int main(int argc, char *argv[])
+16	{
+17	    printf("%d\n", loop_while(atoi(argv[1]), 16));
+18	    return 0;
+19	}
+
+(9)
+The enter key repeats the last command.
+
+(10)
+result = 10
+a = 5
+b = 16
+
+(11)
+(gdb) s
+6	    int result = a;
+(gdb) s
+5	    int i = 0;
+(gdb) s
+8		result += a;
+(gdb) s
+9		a -= b;
+
+(12)
+0x00000000004004ba <+10>:	callq  0x4004a0 <atoi@plt> for atoi
+
+0x00000000004004e7 <+55>:	callq  0x400490 <__printf_chk@plt> for printf
+
+
+(13)
+there is no call to the loop_while.
+
+(14)
+print/x 42
+$1 = 0x2a
+
+p 0x2f
+$2 = 47
+
+(15)
+the 0x10 constant is what is passed in by the main which is 16. In binary both
+these numbers are 0001 0000.
+
+(16)
+The compiler was smart enough to compile it out, and there is no need to call it.
+
+(17)
+that's crazy!
+
+*Problem 2*
+
+(1)
+1 = 1078530011
+
+(2)
+2 = 0x40490fdb, yes because we see the number in hexadecimal which is what we
+see in the code.
+
+(3)
+The command break up our hexadecimal in what seems the constant that we give it
+in this case 4. It is returned in little endian form.
+
+(4)
+we could use x/f to turn it into a float, which is just pi.
+
+(5)
+It is not correct, my suspicion is that it because of the float number and how it truncates and rounds up.
+
+(6)
+Since this is two ints we must use "g" as one of the arguments. so x/gf equal
+2.7182818284590451 which is e.
+
+(7)
+yes and no, because our last value was pi.
+
+(8)
+Yes it is correct.
+
+(9)
+a string that says "was that really so hard?"
+
+(10)
+Yes a_size = 10, we did not have to print because in the the first line we have
+"Breakpoint 1, fix_array (a=0x602010, a_size=10) at problem2.c:23"
+
+(11)
+a=0x602010
+
+(12)
+a = (int *) 0x602010
+
+(13)
+a = (int *) 0x602014
+i = 1
+
+(14)
+ we end up in for (i = 0;  i < a_size;  i++, a++) {
+
+(15)
+ a = (int *) 0x602018
+
+(16)
+we get 1.
+
+(17)
+we are at line 		*a = hmc_pomona_fix(*a);.
+
+(18)
+a = (int *) 0x602030
+
+(19)
+print *a
+so it is 21.
+
+
+problem 3
+(1)
+1 47 2 42 3
+
+(2)
+stops at array = (int *)malloc(argc * sizeof(int));
+
+(3)
+it stops at for (i = 1;  i < argc;  i++) {
+
+(4)
+no it does not.
+
+(5)
+it is the same as the assingment of i which is 0.
+
+(6)
+We get the type, Disp Enb, Address, and what.
+which is:
+breakpoint     keep y   0x000000000040069f in main at problem2.c:36.
+
+(7)
+$2 = {0, 1, 42, 2, 47, 0}
+
+(8)
+at the end of the program
+1 47 2 42 3
+
+(9)
+we have not covered cs, dd, ds, ed, and fs.
+
+(10)
+Interrupt Enable Flag [ IF ]
+
+(11)
+$1 = 6299664 for p %rax.
+$2 = 0x602010 for p/x $rax.
+Perhaps, we just got the hexadecimal.
+
+(12)
+The results of x/16i $rip are alot better than disassem fix_array. x/16i starts
+from our arrow and also parses the hexadecimal getting rid of all the 0's we do
+not need.
+
+(13)
+we end up in 24		*a = hmc_pomona_fix(*a);
+
+(14)
+the next instruction address is 0x0000000000400653.
+
+(15)
+hmc_pomona_fix (x=0) at problem2.c:10 for stepi.
+0x0000000000400658	24		*a = hmc_pomona_fix(*a); for nexti.
+
+(16)
+Breakpoint 2, fix_array (a=0x602024, a_size=5) at problem2.c:26
+26	}
+
+(17)
+as hexadecimal:
+(gdb) p/x $rsp
+$8 = 0x7fffffffe8e0
+
+as decimal:
+(gdb) p/d $rsp
+$9 = 140737488349408
+
+as hexadecimal:
+(gdb) p/x $rbp
+$10 = 0x7fffffffe900
+
+as decimal:
+(gdb) p/d $rbp
+$11 = 140737488349440
+
+(18)
+No they do not change.
